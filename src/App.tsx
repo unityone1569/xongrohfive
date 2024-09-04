@@ -1,6 +1,6 @@
 import SignInForm from './_auth/forms/SignInForm';
 import SignUpForm from './_auth/forms/SignUpForm';
-import AuthLayout from './_auth/forms/AuthLayout';
+import AuthLayout from './_auth/AuthLayout';
 import RootLayout from './_root/RootLayout';
 import { Home } from './_root/pages';
 
