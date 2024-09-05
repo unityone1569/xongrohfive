@@ -14,13 +14,23 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import Loader from '@/components/shared/Loader';
-import { Link } from 'react-router-dom';
-import { createUserAccount } from '@/lib/appwrite/api';
+import { Link, useNavigate } from 'react-router-dom';
+import {
+  useCreateUserAccount,
+  useSignInAccount,
+} from '@/lib/react-query/queries';
+import { useUserContext } from '@/context/AuthContext';
 
 const SignUpForm = () => {
   const { toast } = useToast();
+  const { checkAuthUser, isLoading: isUserLoading } = useUserContext();
+  const navigate = useNavigate();
 
-  const isLoading = false;
+  const { mutateAsync: createUserAccount, isPending: isCreatingAcount } =
+    useCreateUserAccount();
+
+  const { mutateAsync: SignInAccount, isPending: isSigningIN } =
+    useSignInAccount();
 
   const form = useForm<z.infer<typeof SignUpFormSchema>>({
     resolver: zodResolver(SignUpFormSchema),
@@ -43,12 +53,32 @@ const SignUpForm = () => {
       });
     }
 
-    // const session = await signInAccount()
+    const session = await SignInAccount({
+      email: values.email,
+      password: values.password,
+    });
+
+    if (!session) {
+      return toast({
+        title: 'Sign in failed, please try again!',
+      });
+    }
+
+    const isLoggedIn = await checkAuthUser();
+
+    if (isLoggedIn) {
+      form.reset();
+      navigate('/');
+    } else {
+      return toast({
+        title: 'Sign up failed, please try again!',
+      });
+    }
   }
   return (
     <Form {...form}>
       <div className="sm:w-420 flex-center flex-col">
-        <img className="h-20" src="public/assets/icons/logo.svg" alt="logo" />
+        <img className="h-20" src="/assets/icons/logo.svg" alt="logo" />
         <h2 className="h3-bold md:h2-bold pt-5 sm:pt-10">Register</h2>
         <p className="text-light-3 small-medium md:base-regular mt-2 mb-5">
           This marks a new beginning
@@ -128,7 +158,7 @@ const SignUpForm = () => {
             )}
           />
           <Button type="submit" className="shad-button_primary">
-            {isLoading ? (
+            {isCreatingAcount ? (
               <div className="flex-center gap-2">
                 <Loader /> Loading...
               </div>
