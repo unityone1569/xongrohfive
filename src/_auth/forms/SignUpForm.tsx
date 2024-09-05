@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import { useToast } from '@/components/ui/use-toast';
 import { SignUpFormSchema } from '@/lib/validation';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -14,8 +15,11 @@ import {
 import { Input } from '@/components/ui/input';
 import Loader from '@/components/shared/Loader';
 import { Link } from 'react-router-dom';
+import { createUserAccount } from '@/lib/appwrite/api';
 
 const SignUpForm = () => {
+  const { toast } = useToast();
+
   const isLoading = false;
 
   const form = useForm<z.infer<typeof SignUpFormSchema>>({
@@ -29,8 +33,17 @@ const SignUpForm = () => {
     },
   });
 
-  function onSubmit(values: z.infer<typeof SignUpFormSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof SignUpFormSchema>) {
+    const newUser = await createUserAccount(values);
+    console.log(newUser);
+
+    if (!newUser) {
+      return toast({
+        title: 'Sign up failed, please try again!',
+      });
+    }
+
+    // const session = await signInAccount()
   }
   return (
     <Form {...form}>
@@ -49,7 +62,7 @@ const SignUpForm = () => {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Name</FormLabel>
+                <FormLabel className="shad-form_label">Name</FormLabel>
                 <FormControl>
                   <Input type="text" className="shad-input" {...field} />
                 </FormControl>
@@ -62,7 +75,7 @@ const SignUpForm = () => {
             name="hometown"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Hometown</FormLabel>
+                <FormLabel className="shad-form_label">Hometown</FormLabel>
                 <FormControl>
                   <Input type="text" className="shad-input" {...field} />
                 </FormControl>
@@ -75,7 +88,7 @@ const SignUpForm = () => {
             name="username"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Username</FormLabel>
+                <FormLabel className="shad-form_label">Username</FormLabel>
                 <FormControl>
                   <Input
                     type="text"
@@ -93,7 +106,7 @@ const SignUpForm = () => {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel className="shad-form_label">Email</FormLabel>
                 <FormControl>
                   <Input type="email" className="shad-input" {...field} />
                 </FormControl>
@@ -106,7 +119,7 @@ const SignUpForm = () => {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Password</FormLabel>
+                <FormLabel className="shad-form_label">Password</FormLabel>
                 <FormControl>
                   <Input type="password" className="shad-input" {...field} />
                 </FormControl>
