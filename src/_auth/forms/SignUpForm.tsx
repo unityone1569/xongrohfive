@@ -77,9 +77,9 @@ const SignUpForm = () => {
   }
   return (
     <Form {...form}>
-      <div className="sm:w-420 flex-center flex-col">
+      <div className="sm:w-420 flex-center flex-col ">
         <img className="h-20" src="/assets/icons/logo.svg" alt="logo" />
-        <h2 className="h3-bold md:h2-bold pt-5 sm:pt-10">Register</h2>
+        <h2 className="h3-bold md:h2-bold pt-10 sm:pt-12">Register</h2>
         <p className="text-light-3 small-medium md:base-regular mt-2 mb-5">
           This marks a new beginning
         </p>
