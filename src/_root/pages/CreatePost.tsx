@@ -1,9 +1,9 @@
 
 
-const createPost = () => {
+const CreatePost = () => {
   return (
     <div>createPost</div>
   )
 }
 
-export default createPost
+export default CreatePost
