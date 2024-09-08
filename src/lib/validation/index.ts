@@ -21,5 +21,13 @@ export const SignUpFormSchema = z.object({
 
 export const SignInValidation = z.object({
   email: z.string().email(),
-  password: z.string().min(8, { message: "Password must be at least 8 characters." }),
+  password: z
+    .string()
+    .min(8, { message: 'Password must be at least 8 characters.' }),
+});
+
+export const PostValidation = z.object({
+  content: z.string().min(5).max(63206),
+  media: z.custom<File[]>(),
+  tags: z.string(),
 });
