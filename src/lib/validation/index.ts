@@ -28,6 +28,6 @@ export const SignInValidation = z.object({
 
 export const PostValidation = z.object({
   content: z.string().min(5).max(63206),
-  media: z.custom<File[]>(),
+  file: z.custom<File[]>(),
   tags: z.string(),
 });

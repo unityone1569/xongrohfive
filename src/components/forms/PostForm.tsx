@@ -15,23 +15,44 @@ import { Textarea } from '../ui/textarea';
 import FileUploader from '../shared/FileUploader';
 import { PostValidation } from '@/lib/validation';
 import { Models } from 'appwrite';
+import { useUserContext } from '@/context/AuthContext';
+import { useToast } from '../ui/use-toast';
+import { useNavigate } from 'react-router-dom';
+import { useCreatePost } from '@/lib/react-query/queries';
 
 type PostFormProps = {
-    post?: Models.Document
-}
+  post?: Models.Document;
+};
 
-const PostForm = ({ post } : PostFormProps) => {
+const PostForm = ({ post }: PostFormProps) => {
+  const { user } = useUserContext();
+  const { toast } = useToast();
+  const navigate = useNavigate();
+
   const form = useForm<z.infer<typeof PostValidation>>({
     resolver: zodResolver(PostValidation),
     defaultValues: {
       content: post ? post?.content : '',
-      media: [],
-      tags: post ? post.tags.join(','):''
+      file: [],
+      tags: post ? post.tags.join(',') : '',
     },
   });
 
-  function onSubmit(values: z.infer<typeof PostValidation>) {
-    console.log(values);
+  // Query
+  const { mutateAsync: createPost, isPending: isLoadingCreate } =
+    useCreatePost();
+
+  async function onSubmit(values: z.infer<typeof PostValidation>) {
+    const newPost = await createPost({
+      ...values,
+      userId: user.id,
+    });
+
+    if (!newPost) {
+      toast({ title: 'Please try again!' });
+    }
+
+    navigate('/');
   }
 
   return (
@@ -60,14 +81,14 @@ const PostForm = ({ post } : PostFormProps) => {
 
         <FormField
           control={form.control}
-          name="media"
+          name="file"
           render={({ field }) => (
             <FormItem>
               <FormLabel className="shad-form_label">Add Media</FormLabel>
               <FormControl>
                 <FileUploader
                   fieldChange={field.onChange}
-                  mediaUrl={post?.mediaUrl}
+                  docUrl={post?.mediaUrl}
                 />
               </FormControl>
 

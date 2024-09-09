@@ -1,16 +1,16 @@
-import { useCallback, useState } from "react";
-import { FileWithPath, useDropzone } from "react-dropzone";
-import { convertFileToUrl } from "@/lib/utils";
-import { Button } from "../ui/button";
+import { useCallback, useState } from 'react';
+import { FileWithPath, useDropzone } from 'react-dropzone';
+import { convertFileToUrl } from '@/lib/utils';
+import { Button } from '../ui/button';
 
 type FileUploaderProps = {
   fieldChange: (files: File[]) => void;
-  mediaUrl: string;
+  docUrl: string;
 };
 
-const FileUploader = ({ fieldChange, mediaUrl }: FileUploaderProps) => {
+const FileUploader = ({ fieldChange, docUrl }: FileUploaderProps) => {
   const [file, setFile] = useState<File[]>([]);
-  const [fileUrl, setFileUrl] = useState<string>(mediaUrl);
+  const [fileUrl, setFileUrl] = useState<string>(docUrl);
 
   const onDrop = useCallback(
     (acceptedFiles: FileWithPath[]) => {
@@ -24,14 +24,15 @@ const FileUploader = ({ fieldChange, mediaUrl }: FileUploaderProps) => {
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
     accept: {
-      "image/*": [".png", ".jpeg", ".jpg"],
+      'image/*': ['.png', '.jpeg', '.jpg'],
     },
   });
 
   return (
     <div
       {...getRootProps()}
-      className="flex flex-center flex-col bg-dark-3 rounded-xl cursor-pointer">
+      className="flex flex-center flex-col bg-dark-3 rounded-xl cursor-pointer"
+    >
       <input {...getInputProps()} className="cursor-pointer" />
 
       {fileUrl ? (
@@ -52,7 +53,9 @@ const FileUploader = ({ fieldChange, mediaUrl }: FileUploaderProps) => {
           <h3 className="base-medium text-light-2 mb-2 mt-6">
             Drag media here
           </h3>
-          <p className="text-light-4 small-regular mb-6">Images, Audio, Videos </p>
+          <p className="text-light-4 small-regular mb-6">
+            Images, Audio, Videos{' '}
+          </p>
 
           <Button type="button" className="shad-button_dark_4">
             Select from files
