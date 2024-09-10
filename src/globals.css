@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -188,7 +188,7 @@
 
   /* Bottom bar */
   .bottom-bar {
-    @apply z-50 flex-between w-full sticky bottom-0 rounded-t-[20px] bg-dark-2 px-5 py-4 md:hidden;
+    @apply z-50 flex-between w-full sticky bottom-0 rounded-t-[20px] bg-dark-2 px-10 py-4 md:hidden;
   }
 
   /* File uploader */
@@ -223,7 +223,7 @@
   }
 
   .leftsidebar-link {
-    @apply rounded-lg base-medium hover:bg-primary-500 transition;
+    @apply rounded-lg base-medium hover:bg-gradient-to-r from-violet-500 to-purple-400 transition;
   }
 
   /* Post Card */
@@ -267,7 +267,7 @@
 
   /* Button */
   .shad-button_primary {
-    @apply bg-primary-500 hover:bg-primary-500 text-light-1 flex gap-2 !important;
+    @apply bg-gradient-to-r from-violet-500 to-purple-400 hover:bg-gradient-to-r from-violet-500 to-purple-400 text-light-1 flex gap-2 !important;
   }
 
   .shad-button_dark_4 {

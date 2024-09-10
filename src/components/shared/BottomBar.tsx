@@ -14,19 +14,19 @@ const BottomBar = () => {
             to={link.route}
             key={link.label}
             className={` ${
-              isActive && 'bg-primary-500 rounded-lg'
-            } flex-center flex-col gap-1 p-2 transition`}
+              isActive &&
+              'bg-gradient-to-r from-violet-500 to-purple-400 rounded-full'
+            } flex-center flex-col gap-1 p-4 transition`}
           >
             <img
               src={link.imgURL}
               alt={link.label}
-              width={16}
-              height={16}
+              width={28}
               className={`group-hover:invert-white ${
                 isActive && 'invert-white'
               }`}
             />
-            <p className="tiny-medium text-light-2">{link.label}</p>
+            {/* <p className="tiny-medium text-light-2">{link.label}</p> */}
           </Link>
         );
       })}
