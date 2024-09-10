@@ -1,5 +1,5 @@
 import { ID, ImageGravity, Query } from 'appwrite';
-import { INewPost, INewUser } from '@/types';
+import { INewPost, INewUser, IUpdatePost } from '@/types';
 import { account, appwriteConfig, avatars, databases, storage } from './config';
 
 export async function createUserAccount(user: INewUser) {
@@ -242,6 +242,102 @@ export async function deleteSavedPost(savedRecordId: string) {
     );
 
     if (!statusCode) throw Error;
+
+    return { status: 'Ok' };
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function getPostById(postId: string) {
+  try {
+    const post = await databases.getDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.postCollectionId,
+      postId
+    );
+    return post;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function updatePost(post: IUpdatePost) {
+  const hasFileToUpdate = post.file.length > 0;
+
+  try {
+    let media = {
+      mediaUrl: post.mediaUrl,
+      mediaId: post.mediaId,
+    };
+
+    if (hasFileToUpdate) {
+      // Upload new file to appwrite storage
+      const uploadedFile = await uploadFile(post.file[0]);
+      if (!uploadedFile) throw Error;
+
+      // Get new file url
+      const fileUrl = getFilePreview(uploadedFile.$id);
+      if (!fileUrl) {
+        await deleteFile(uploadedFile.$id);
+        throw Error;
+      }
+
+      media = { ...media, mediaUrl: fileUrl, mediaId: uploadedFile.$id };
+    }
+
+    // Convert tags into array
+    const tags = post.tags?.replace(/ /g, '').split(',') || [];
+
+    //  Update post
+    const updatedPost = await databases.updateDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.postCollectionId,
+      post.postId,
+      {
+        content: post.content,
+        mediaUrl: media.mediaUrl,
+        mediaId: media.mediaId,
+        location: post.location,
+        tags: tags,
+      }
+    );
+
+    // Failed to update
+    if (!updatedPost) {
+      // Delete new file that has been recently uploaded
+      if (hasFileToUpdate) {
+        await deleteFile(media.mediaId);
+      }
+
+      // If no new file uploaded, just throw error
+      throw Error;
+    }
+
+    // Safely delete old file after successful update
+    if (hasFileToUpdate) {
+      await deleteFile(post.mediaId);
+    }
+
+    return updatedPost;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function deletePost(postId?: string, mediaId?: string) {
+  if (!postId || !mediaId) return;
+
+  try {
+    const statusCode = await databases.deleteDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.postCollectionId,
+      postId
+    );
+
+    if (!statusCode) throw Error;
+
+    await deleteFile(mediaId);
 
     return { status: 'Ok' };
   } catch (error) {
