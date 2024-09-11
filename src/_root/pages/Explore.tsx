@@ -17,8 +17,6 @@ const Explore = () => {
   const { data: searchedPosts, isFetching: isSearchFetching } =
     useSearchPosts(debouncedValue);
 
-  const typedSearchedPosts = Array.isArray(searchedPosts) ? searchedPosts : [];
-
   useEffect(() => {
     if (inView && !searchValue) fetchNextPage();
   }, [inView, searchValue]);
@@ -64,7 +62,7 @@ const Explore = () => {
         {shouldShowSearchResults ? (
           <SearchResult
             isSearchFetching={isSearchFetching}
-            searchedPosts={typedSearchedPosts}
+            searchedPosts={searchedPosts}
           />
         ) : shouldShowPosts ? (
           <p className="text-light-4 mt-10 text-center w-full">
