@@ -16,12 +16,12 @@ const BottomBar = () => {
             className={` ${
               isActive &&
               'bg-gradient-to-r from-violet-500 to-purple-400 rounded-full'
-            } flex-center flex-col gap-1 p-4 transition`}
+            } flex-center flex-col gap-1 p-3 transition`}
           >
             <img
               src={link.imgURL}
               alt={link.label}
-              width={28}
+              width={25}
               className={`group-hover:invert-white ${
                 isActive && 'invert-white'
               }`}
